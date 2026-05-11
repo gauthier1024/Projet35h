@@ -25,6 +25,7 @@ Channel B:
 
 */
 
+
 #define directionPinA 12     // D
 #define directionPinB 13     // D
 #define pwmPinA 3            // A
@@ -33,6 +34,7 @@ Channel B:
 // #define brakePinB 8          // D
 // #define currentSensingPinA 0 // A
 // #define currentSensingPinB 1 // A
+#define IRPin 2              // D
 
 #include <stdint.h>
 #include <cmath>
@@ -65,6 +67,8 @@ typedef enum {
 bool mode = MANUEL;
 
 void setup() {
+  Serial.begin(9600);
+
   // roue A
 	pinMode(directionPinA, OUTPUT);
   pinMode(pwmPinA, OUTPUT);
@@ -77,7 +81,7 @@ void setup() {
 }
 
 
-/*-----------------------------------------*/
+
 
 void input_roues(){
   analogWrite(pwmPinA, 255);
@@ -107,10 +111,11 @@ void input_roues(){
 }
 
 void loop() {
+  
 	if (false) mode = !mode; // placeholder bouton pour changer de mode
 	
 	if (mode == MANUEL) {
-		input_roues();
+		//input_roues();
 	} 
 	else {
 		
@@ -118,4 +123,8 @@ void loop() {
 	}
 
 	
+
+  Serial.println(digitalRead(IRPin));
+  
 }
+
