@@ -1,19 +1,42 @@
-/* https://github.com/adafruit/Adafruit_Motor_Shield_V2_Library/blob/master/Adafruit_MotorShield.h
+/* 
+https://docs.arduino.cc/tutorials/motor-shield-rev3/msr3-controlling-dc-motor/?_gl=1*2ba1jw*_up*MQ..*_ga*OTE0MDk4Njk5LjE3Nzg0ODA5MjQ.*_ga_NEXN8H46L5*czE3Nzg0ODA5MjMkbzEkZzEkdDE3Nzg0ODA5OTgkajYwJGwwJGg2ODM0MDMyNDA.
 
-#define FORWARD 1
-#define BACKWARD 2
-#define BRAKE 3
-#define RELEASE 4
+Shield:
+But if we want to do a bit more than just making a motor spin full speed in two directions, we need a motor control circuit. 
+More specifically, the dual full-bridge driver L298P, which we can find on the Motor Shield Rev3.
 
+With this IC, we can set the work duty (0-100), enable brakes (HIGH, or LOW), and set the direction (HIGH or LOW). 
+Each of these features can be controlled using a different set of pins. 
+As we are going to control a DC motor in this tutorial, let's take a look at the pins that are used:
 
-Pins A4 et A5 utilisés par le shield
+Channel A:
+
+    D12 - Direction
+    D3 - PWM (work duty)
+    D9 - Brake
+    A0 - current sensing.
+
+Channel B:
+
+    D13 - Direction
+    D11 - PWM (work duty)
+    D8 - Brake
+    A1 - current sensing.
+
 */
+
+#define directionPinA 12 // D
+#define directionPinB 13 // D
+#define pwmPinA 3 // A
+#define pwmPinB 11 // A
+#define brakePinA 9 // D
+#define brakePinB 8 // D
+#define currentSensingPinA 0 // A
+#define currentSensingPinB 1 // A
+
 
 #include <stdint.h>
 #include <cmath>
-
-#include <Wire.h>
-#include <Adafruit_MotorShield.h>
 
 typedef enum {
 	BOUTON_1 = 0,
@@ -33,38 +56,34 @@ typedef enum {
 	OK = 14,
 	DROITE = 15,
 	BAS = 16
-} key_t;
+} touche_t;
 
 typedef enum {
 	MANUEL = false,
 	AUTOMATIQUE = true
-} mode_t;
+} mode_robot_t;
 
 bool mode = MANUEL;
-
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
-Adafruit_DCMotor *moteur1 = AFMS.getMotor(1); // M1
-Adafruit_DCMotor *moteur2 = AFMS.getMotor(2); // M2
 
 /*-----------------------------------------*/
 
 void moteur(uint8_t gauche_commande, uint8_t gauche_puissance, uint8_t droite_commande, uint8_t droite_puissance) {
-	moteur1->setSpeed(gauche_puissance);
-	moteur2->setSpeed(droite_puissance);
-	moteur1->run(gauche_commande);
-	moteur2->run(droite_commande);
+
 }
 
 /*-----------------------------------------*/
 
+/*
 void setup() {
 	AFMS.begin();         // Initialise le shield
 	moteur1->setSpeed(0); // Vitesse
 	moteur2->setSpeed(0); // Vitesse
 }
+*/
 
 /*-----------------------------------------*/
 
+/*
 void loop() {
 	if (false) mode = !mode; // placeholder bouton pour changer de mode
 	
@@ -80,4 +99,59 @@ void loop() {
 	}
 
 	
+}
+*/
+
+int directionPin = 12;
+int pwmPin = 3;
+int brakePin = 9;
+
+
+//uncomment if using channel B, and remove above definitions
+//int directionPin = 13;
+//int pwmPin = 11;
+//int brakePin = 8;
+
+//boolean to switch direction
+bool directionState;
+
+void setup() {
+
+//define pins
+pinMode(directionPin, OUTPUT);
+pinMode(pwmPin, OUTPUT);
+pinMode(brakePin, OUTPUT);
+
+}
+
+void loop() {
+
+//change direction every loop()
+directionState = !directionState;
+
+//write a low state to the direction pin (13)
+if(directionState == false){
+  digitalWrite(directionPin, LOW);
+}
+
+//write a high state to the direction pin (13)
+else{
+  digitalWrite(directionPin, HIGH);
+}
+
+//release breaks
+digitalWrite(brakePin, LOW);
+
+//set work duty for the motor
+analogWrite(pwmPin, 255);
+
+delay(2000);
+
+//activate breaks
+digitalWrite(brakePin, HIGH);
+
+//set work duty for the motor to 0 (off)
+analogWrite(pwmPin, 0);
+
+delay(2000);
 }
