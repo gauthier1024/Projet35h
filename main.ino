@@ -25,15 +25,14 @@ Channel B:
 
 */
 
-#define directionPinA 12 // D
-#define directionPinB 13 // D
-#define pwmPinA 3 // A
-#define pwmPinB 11 // A
-#define brakePinA 9 // D
-#define brakePinB 8 // D
-#define currentSensingPinA 0 // A
-#define currentSensingPinB 1 // A
-
+#define directionPinA 12     // D
+#define directionPinB 13     // D
+#define pwmPinA 3            // A
+#define pwmPinB 11           // A
+// #define brakePinA 9          // D
+// #define brakePinB 8          // D
+// #define currentSensingPinA 0 // A
+// #define currentSensingPinB 1 // A
 
 #include <stdint.h>
 #include <cmath>
@@ -65,33 +64,53 @@ typedef enum {
 
 bool mode = MANUEL;
 
-/*-----------------------------------------*/
-
-void moteur(uint8_t gauche_commande, uint8_t gauche_puissance, uint8_t droite_commande, uint8_t droite_puissance) {
-
-}
-
-/*-----------------------------------------*/
-
-/*
 void setup() {
-	AFMS.begin();         // Initialise le shield
-	moteur1->setSpeed(0); // Vitesse
-	moteur2->setSpeed(0); // Vitesse
+  // roue A
+	pinMode(directionPinA, OUTPUT);
+  pinMode(pwmPinA, OUTPUT);
+
+  // roue B
+  pinMode(directionPinB, OUTPUT);
+  pinMode(pwmPinB, OUTPUT);
+
+
 }
-*/
+
 
 /*-----------------------------------------*/
 
-/*
+void input_roues(){
+  analogWrite(pwmPinA, 255);
+  analogWrite(pwmPinB, 255);
+  if (false) {   // placeholder bouton pour avancer (HAUT)
+    digitalWrite(directionPinA, LOW);
+    digitalWrite(directionPinB, LOW);
+  }
+	if (false) {   // placeholder bouton pour gauche  (GAUCHE)
+    digitalWrite(directionPinA, HIGH);
+    digitalWrite(directionPinB, LOW);
+  }
+	if (false) {   // placeholder bouton pour droite  (DROITE)
+    digitalWrite(directionPinA, LOW);
+    digitalWrite(directionPinB, HIGH);
+  }
+	if (false) {   // placeholder bouton pour reculer (BAS)
+    digitalWrite(directionPinA, HIGH);
+    digitalWrite(directionPinB, HIGH);
+  }
+
+  digitalWrite(directionPinA, LOW);
+  digitalWrite(directionPinB, LOW);
+  analogWrite(pwmPinA, 0);
+  analogWrite(pwmPinB, 0);
+  return;
+}
+
 void loop() {
 	if (false) mode = !mode; // placeholder bouton pour changer de mode
 	
 	if (mode == MANUEL) {
-		if (false) moteur(FORWARD, 255, FORWARD, 255);   // placeholder bouton pour avancer (HAUT)
-		if (false) moteur(BACKWARD, 0, FORWARD, 255);    // placeholder bouton pour gauche  (GAUCHE)
-		if (false) moteur(FORWARD, 255, BACKWARD, 0);    // placeholder bouton pour droite  (DROITE)
-		if (false) moteur(BACKWARD, 255, BACKWARD, 255); // placeholder bouton pour reculer (BAS)
+		input_roues();
 	} 
 	else {
 		
@@ -99,59 +118,4 @@ void loop() {
 	}
 
 	
-}
-*/
-
-int directionPin = 12;
-int pwmPin = 3;
-int brakePin = 9;
-
-
-//uncomment if using channel B, and remove above definitions
-//int directionPin = 13;
-//int pwmPin = 11;
-//int brakePin = 8;
-
-//boolean to switch direction
-bool directionState;
-
-void setup() {
-
-//define pins
-pinMode(directionPin, OUTPUT);
-pinMode(pwmPin, OUTPUT);
-pinMode(brakePin, OUTPUT);
-
-}
-
-void loop() {
-
-//change direction every loop()
-directionState = !directionState;
-
-//write a low state to the direction pin (13)
-if(directionState == false){
-  digitalWrite(directionPin, LOW);
-}
-
-//write a high state to the direction pin (13)
-else{
-  digitalWrite(directionPin, HIGH);
-}
-
-//release breaks
-digitalWrite(brakePin, LOW);
-
-//set work duty for the motor
-analogWrite(pwmPin, 255);
-
-delay(2000);
-
-//activate breaks
-digitalWrite(brakePin, HIGH);
-
-//set work duty for the motor to 0 (off)
-analogWrite(pwmPin, 0);
-
-delay(2000);
 }
