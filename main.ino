@@ -59,13 +59,14 @@ A5
 // #define currentSensingPinB 1 // A
 #define IRPin 2              // D
 #define servoPin 5           // D
+#define lignePinA 6
+#define lignePinB 7
 
 #include <stdint.h>
 
 #include <Servo.h>
 
 /*
-
 typedef uint32_t etat_clavier_t;
 typedef enum {
 	BOUTON_1 = 0,
@@ -106,13 +107,13 @@ typedef enum {
 
 bool mode = AUTOMATIQUE;
 
-Servo monServo;
+Servo servo;
 
 void setup() {
   Serial.begin(9600);
 
-  monServo.attach(servoPin);
-  monServo.write(0);
+  servo.attach(servoPin);
+  servo.write(180);
 
   // roue A
 	pinMode(directionPinA, OUTPUT);
@@ -122,47 +123,51 @@ void setup() {
   pinMode(directionPinB, OUTPUT);
   pinMode(pwmPinB, OUTPUT);
 
-
+  // analogWrite(pwmPinA, 255);
+  // analogWrite(pwmPinB, 255);
 }
 
 void loop() {
-  etat_clavier_t etat = scan_clavier();
+  // etat_clavier_t etat = scan_clavier();
   
-	if (touche_appuyee(etat, BOUTON_1)) mode = !mode; // changer de mode si btn1
+	// if (touche_appuyee(etat, BOUTON_1)) mode = !mode; // changer de mode si btn1
 	
-	if (mode == MANUEL) {
-	 	if (touche_appuyee(etat, HAUT)){
-      analogWrite(pwmPinA, 255);
-      analogWrite(pwmPinB, 255);
-      digitalWrite(directionPinA, LOW);
-      digitalWrite(directionPinB, LOW);
-    }
-    else if (touche_appuyee(etat, BAS)){
-      analogWrite(pwmPinA, 255);
-      analogWrite(pwmPinB, 255);
-      digitalWrite(directionPinA, HIGH);
-      digitalWrite(directionPinB, LOW);
-    }
-    else if (touche_appuyee(etat, GAUCHE)){
-      analogWrite(pwmPinA, 255);
-      analogWrite(pwmPinB, 255);
-      digitalWrite(directionPinA, LOW);
-      digitalWrite(directionPinB, HIGH);
-    }
-    else if (touche_appuyee(etat, DROITE)){
-      analogWrite(pwmPinA, 255);
-      analogWrite(pwmPinB, 255);
-      digitalWrite(directionPinA, HIGH);
-      digitalWrite(directionPinB, HIGH);
-    }
-    else {
-      analogWrite(pwmPinA, 0);
-      analogWrite(pwmPinB, 0);
-    }
-	}
-	else {
+	// if (mode == MANUEL) {
+	//  	if (touche_appuyee(etat, HAUT)){
+  //     analogWrite(pwmPinA, 255);
+  //     analogWrite(pwmPinB, 255);
+  //     digitalWrite(directionPinA, HIGH);
+  //     digitalWrite(directionPinB, HIGH);
+  //   }
+  //   else if (touche_appuyee(etat, BAS)){
+  //     analogWrite(pwmPinA, 255);
+  //     analogWrite(pwmPinB, 255);
+  //     digitalWrite(directionPinA, LOW);
+  //     digitalWrite(directionPinB, HIGH);
+  //   }
+  //   else if (touche_appuyee(etat, GAUCHE)){
+  //     analogWrite(pwmPinA, 255);
+  //     analogWrite(pwmPinB, 255);
+  //     digitalWrite(directionPinA, HIGH);
+  //     digitalWrite(directionPinB, LOW);
+  //   }
+  //   else if (touche_appuyee(etat, DROITE)){
+  //     analogWrite(pwmPinA, 255);
+  //     analogWrite(pwmPinB, 255);
+  //     digitalWrite(directionPinA, LOW);
+  //     digitalWrite(directionPinB, LOW);
+  //   }
+  //   else {
+  //     analogWrite(pwmPinA, 0);
+  //     analogWrite(pwmPinB, 0);
+  //   }
+	// }
+	// else {
 		
-	}
+	// }
 
-	  
+  
+  
+  
+	
 }
