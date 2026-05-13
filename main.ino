@@ -23,6 +23,29 @@ Channel B:
     D8 - Brake
     A1 - current sensing.
 
+digitalWrite(directionPinA, LOW); // sens
+analogWrite(pwmPinA, 255); // vitesse
+
+D0 *
+D1 *
+D2 * IR
+D3 * PWM Shield
+D4
+D5 * Servo
+D6 * Suivi de ligne
+D7 * Suivi de ligne
+D8 * Shield Brake
+D9 * Shield Brake
+D10
+D11 * PWM Shield
+D12 * Direction Shield
+D13 * Direction Shield
+A0 * Shield Current sensing
+A1 * Shield Current sensing
+A2
+A3
+A4
+A5
 */
 
 
@@ -35,10 +58,15 @@ Channel B:
 // #define currentSensingPinA 0 // A
 // #define currentSensingPinB 1 // A
 #define IRPin 2              // D
+#define servoPin 5           // D
 
 #include <stdint.h>
-#include <cmath>
 
+#include <Servo.h>
+
+/*
+
+typedef uint32_t etat_clavier_t;
 typedef enum {
 	BOUTON_1 = 0,
 	BOUTON_2 = 1,
@@ -59,15 +87,32 @@ typedef enum {
 	BAS = 16
 } touche_t;
 
+etat_clavier_t scan_clavier(){
+  // placeholder car IR marche pas
+  return 0;
+}
+
+static inline bool touche_appuyee(etat_clavier_t etat, touche_t touche) {
+  return (etat >> (uint8_t)touche) & 1;
+}
+
+*/
+
 typedef enum {
 	MANUEL = false,
 	AUTOMATIQUE = true
 } mode_robot_t;
 
-bool mode = MANUEL;
+
+bool mode = AUTOMATIQUE;
+
+Servo monServo;
 
 void setup() {
   Serial.begin(9600);
+
+  monServo.attach(servoPin);
+  monServo.write(0);
 
   // roue A
 	pinMode(directionPinA, OUTPUT);
@@ -80,51 +125,44 @@ void setup() {
 
 }
 
-
-
-
-void input_roues(){
-  analogWrite(pwmPinA, 255);
-  analogWrite(pwmPinB, 255);
-  if (false) {   // placeholder bouton pour avancer (HAUT)
-    digitalWrite(directionPinA, LOW);
-    digitalWrite(directionPinB, LOW);
-  }
-	if (false) {   // placeholder bouton pour gauche  (GAUCHE)
-    digitalWrite(directionPinA, HIGH);
-    digitalWrite(directionPinB, LOW);
-  }
-	if (false) {   // placeholder bouton pour droite  (DROITE)
-    digitalWrite(directionPinA, LOW);
-    digitalWrite(directionPinB, HIGH);
-  }
-	if (false) {   // placeholder bouton pour reculer (BAS)
-    digitalWrite(directionPinA, HIGH);
-    digitalWrite(directionPinB, HIGH);
-  }
-
-  digitalWrite(directionPinA, LOW);
-  digitalWrite(directionPinB, LOW);
-  analogWrite(pwmPinA, 0);
-  analogWrite(pwmPinB, 0);
-  return;
-}
-
 void loop() {
+  etat_clavier_t etat = scan_clavier();
   
-	if (false) mode = !mode; // placeholder bouton pour changer de mode
+	if (touche_appuyee(etat, BOUTON_1)) mode = !mode; // changer de mode si btn1
 	
 	if (mode == MANUEL) {
-		//input_roues();
-	} 
+	 	if (touche_appuyee(etat, HAUT)){
+      analogWrite(pwmPinA, 255);
+      analogWrite(pwmPinB, 255);
+      digitalWrite(directionPinA, LOW);
+      digitalWrite(directionPinB, LOW);
+    }
+    else if (touche_appuyee(etat, BAS)){
+      analogWrite(pwmPinA, 255);
+      analogWrite(pwmPinB, 255);
+      digitalWrite(directionPinA, HIGH);
+      digitalWrite(directionPinB, LOW);
+    }
+    else if (touche_appuyee(etat, GAUCHE)){
+      analogWrite(pwmPinA, 255);
+      analogWrite(pwmPinB, 255);
+      digitalWrite(directionPinA, LOW);
+      digitalWrite(directionPinB, HIGH);
+    }
+    else if (touche_appuyee(etat, DROITE)){
+      analogWrite(pwmPinA, 255);
+      analogWrite(pwmPinB, 255);
+      digitalWrite(directionPinA, HIGH);
+      digitalWrite(directionPinB, HIGH);
+    }
+    else {
+      analogWrite(pwmPinA, 0);
+      analogWrite(pwmPinB, 0);
+    }
+	}
 	else {
 		
-
 	}
 
-	
-
-  Serial.println(digitalRead(IRPin));
-  
+	  
 }
-
